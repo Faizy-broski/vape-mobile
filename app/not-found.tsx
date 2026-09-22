@@ -9,19 +9,19 @@ export default function NotFound() {
   return (
     <div className="flex flex-1 flex-col">
       <SiteHeader />
-      <main className="relative flex flex-1 flex-col items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_50%_0%,oklch(0.28_0.04_155)_0%,oklch(0.1_0.01_155)_65%)] px-6 py-24 text-center text-white">
+      <main className="relative flex flex-1 flex-col items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_50%_0%,oklch(0.28_0.04_155)_0%,oklch(0.1_0.01_155)_65%)] px-5 py-16 text-center text-white xs:px-6 sm:py-24">
         <span className="text-xs font-medium tracking-[0.2em] text-white/50 uppercase">
           Error 404
         </span>
-        <h1 className="mt-4 font-heading text-[22vw] leading-none font-black tracking-tight sm:text-8xl lg:text-9xl">
+        <h1 className="mt-4 font-heading leading-none font-black tracking-tight" style={{ fontSize: "clamp(4.5rem, 22vw, 10rem)" }}>
           404
         </h1>
-        <p className="mt-4 max-w-md text-base text-white/70 sm:text-lg">
+        <p className="mt-4 max-w-md text-sm text-white/70 sm:text-lg">
           We couldn&apos;t find the page you&apos;re looking for. It may have
           been moved, or the link might be broken.
         </p>
 
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+        <div className="mt-8 flex flex-col gap-3 xs:flex-row">
           <Link
             href="/"
             className={cn(

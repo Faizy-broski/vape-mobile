@@ -32,12 +32,12 @@ export function SiteHeader() {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/90 backdrop-blur supports-backdrop-filter:bg-background/70"
     >
-      <div className="container-px mx-auto flex h-18 max-w-7xl items-center justify-between gap-4 py-3">
+      <div className="wrap flex h-16 items-center justify-between gap-4 py-3 sm:h-18">
         <Link href="/" className="flex items-center gap-2.5 shrink-0">
           <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-foreground text-[11px] font-heading font-bold tracking-tight">
             V&M
           </span>
-          <span className="font-heading text-lg font-bold tracking-tight">
+          <span className="font-heading text-base font-bold tracking-tight xs:text-lg">
             VAPE <span className="text-muted-foreground font-normal">|</span> MOBILE
           </span>
         </Link>
