@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 
@@ -54,9 +55,13 @@ export function SiteFooter() {
         <div className="grid grid-cols-1 gap-10 xs:grid-cols-2 lg:grid-cols-5">
           <div className="xs:col-span-2 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-white text-[11px] font-heading font-bold">
-                V&M
-              </span>
+              <Image
+                src="/V&M-logo.svg"
+                alt="V&M"
+                width={36}
+                height={36}
+                className="size-9"
+              />
               <span className="font-heading text-base font-bold tracking-tight">
                 VAPE <span className="text-white/50 font-normal">|</span> MOBILE
               </span>

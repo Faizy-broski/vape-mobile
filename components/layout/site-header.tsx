@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { motion } from "motion/react";
@@ -34,9 +35,14 @@ export function SiteHeader() {
     >
       <div className="wrap flex h-16 items-center justify-between gap-4 py-3 sm:h-18">
         <Link href="/" className="flex items-center gap-2.5 shrink-0">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-foreground text-[11px] font-heading font-bold tracking-tight">
-            V&M
-          </span>
+          <Image
+            src="/V&M-logo.svg"
+            alt="V&M"
+            width={36}
+            height={36}
+            className="size-9"
+            priority
+          />
           <span className="font-heading text-base font-bold tracking-tight xs:text-lg">
             VAPE <span className="text-muted-foreground font-normal">|</span> MOBILE
           </span>

@@ -52,12 +52,20 @@ function StarRow({ count = 5 }: { count?: number }) {
   );
 }
 
-export function Testimonials() {
+type TestimonialsProps = {
+  sectionNumber?: string;
+  backgroundImage?: string;
+};
+
+export function Testimonials({
+  sectionNumber = "04 — Testimonials",
+  backgroundImage = "/vape/tesimonial-bg.png",
+}: TestimonialsProps) {
   return (
     <section className="relative overflow-hidden">
       <Image
         aria-hidden
-        src="/vape/tesimonial-bg.png"
+        src={backgroundImage}
         alt=""
         width={950}
         height={1350}
@@ -65,7 +73,7 @@ export function Testimonials() {
       />
       <Image
         aria-hidden
-        src="/vape/tesimonial-bg.png"
+        src={backgroundImage}
         alt=""
         width={950}
         height={1350}
@@ -76,7 +84,7 @@ export function Testimonials() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <span className="inline-block text-xs font-semibold tracking-[0.2em] text-amber-500 uppercase">
-              04 — Testimonials
+              {sectionNumber}
             </span>
             <h2 className="mt-2 max-w-lg font-heading text-3xl leading-[1.05] font-black tracking-tight uppercase xs:text-4xl sm:text-5xl">
               What people say at the counter.

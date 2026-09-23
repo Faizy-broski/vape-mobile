@@ -86,12 +86,44 @@ export function RepairProcess() {
           >
             <motion.span
               initial={{ opacity: 0, scale: 0.5, rotate: -20 }}
-              whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+              whileInView={{
+                opacity: 1,
+                scale: [0.5, 1.15, 1, 1.06, 1],
+                rotate: [-20, 0, 0, 0, 0],
+              }}
               viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.4, delay: BAR_DURATION * 0.15 }}
-              className="absolute top-1/2 right-0 flex size-8 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-white shadow-[0_0_20px_4px_oklch(1_0_0/0.35)]"
+              transition={{
+                duration: 1.6,
+                times: [0, 0.35, 0.55, 0.8, 1],
+                delay: BAR_DURATION * 0.15,
+                ease: "easeOut",
+              }}
+              className="absolute top-1/2 right-0 flex size-8 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-white"
             >
-              <Wrench className="size-4 text-[oklch(0.16_0.03_141)]" strokeWidth={2} />
+              <motion.span
+                aria-hidden
+                animate={{ opacity: [0.35, 0.7, 0.35], scale: [1, 1.35, 1] }}
+                transition={{
+                  duration: 1.8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: BAR_DURATION,
+                }}
+                className="absolute inset-0 rounded-full bg-white blur-[6px]"
+              />
+              <motion.span
+                animate={{ rotate: [0, -18, 14, 0] }}
+                transition={{
+                  duration: 2.2,
+                  repeat: Infinity,
+                  repeatDelay: 1,
+                  ease: "easeInOut",
+                  delay: BAR_DURATION,
+                }}
+                className="relative"
+              >
+                <Wrench className="size-4 text-[oklch(0.16_0.03_141)]" strokeWidth={2} />
+              </motion.span>
             </motion.span>
           </motion.div>
         </div>
@@ -120,7 +152,7 @@ export function RepairProcess() {
                 {step.description}
               </p>
 
-              <div className="relative mt-4 aspect-square w-full max-w-[9rem] overflow-hidden rounded-xl ring-1 ring-white/10">
+              <div className="relative mt-4 aspect-square w-full max-w-36 overflow-hidden rounded-xl ring-1 ring-white/10">
                 <Image
                   src={step.image}
                   alt={step.title}

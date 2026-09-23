@@ -1,10 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "motion/react";
 import { Card, CardContent } from "@/components/ui/card";
 
 type RepairCategory = {
+  slug: string;
   name: string;
   description: string;
   image: string;
@@ -12,41 +14,49 @@ type RepairCategory = {
 
 const CATEGORIES: RepairCategory[] = [
   {
+    slug: "phone",
     name: "Phone",
     description: "iPhone, Samsung, Google Pixel repairs across London",
     image: "/tech/repairs/phone.png",
   },
   {
+    slug: "tablet",
     name: "Tablet",
     description: "iPad, Surface Pro, and all tablet brands",
     image: "/tech/repairs/tablet.png",
   },
   {
+    slug: "laptop",
     name: "Laptop",
     description: "MacBook, Windows laptops, screen and motherboard repairs",
     image: "/tech/repairs/laptop.png",
   },
   {
+    slug: "pc-desktop",
     name: "PC Desktop",
     description: "Custom builds, gaming PCs, hardware upgrades",
     image: "/tech/repairs/pc.png",
   },
   {
+    slug: "data-recovery",
     name: "Data Recovery",
     description: "Professional recovery from failed drives and devices",
     image: "/tech/repairs/data-recovery.png",
   },
   {
+    slug: "drone",
     name: "Drone",
     description: "DJI specialists for motors, gimbal, camera repairs",
     image: "/tech/repairs/drone.png",
   },
   {
+    slug: "game-console",
     name: "Game Console",
     description: "PlayStation, Xbox, Nintendo Switch repairs",
     image: "/tech/repairs/gaming-console.png",
   },
   {
+    slug: "other",
     name: "Other Devices",
     description: "Ask us about your specific device repair needs",
     image: "/tech/repairs/other-device.png",
@@ -89,27 +99,29 @@ export function WhatWeRepair() {
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.4, delay: (i % 4) * 0.05 }}
             >
-              <Card className="h-full bg-card/90 backdrop-blur-sm transition-shadow hover:shadow-md">
-                <CardContent className="flex h-full flex-col items-center gap-3 py-2 text-center">
-                  <span className="relative size-16 shrink-0 xs:size-20">
-                    <Image
-                      src={category.image}
-                      alt=""
-                      fill
-                      sizes="80px"
-                      className="object-contain"
-                    />
-                  </span>
-                  <div>
-                    <p className="text-sm font-semibold text-foreground xs:text-base">
-                      {category.name}
-                    </p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {category.description}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+              <Link href={`/repairs/book?device=${category.slug}`}>
+                <Card className="h-full bg-card/90 backdrop-blur-sm transition-shadow hover:shadow-md hover:ring-primary/40">
+                  <CardContent className="flex h-full flex-col items-center gap-3 py-2 text-center">
+                    <span className="relative size-16 shrink-0 xs:size-20">
+                      <Image
+                        src={category.image}
+                        alt=""
+                        fill
+                        sizes="80px"
+                        className="object-contain"
+                      />
+                    </span>
+                    <div>
+                      <p className="text-sm font-semibold text-foreground xs:text-base">
+                        {category.name}
+                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {category.description}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             </motion.div>
           ))}
         </div>

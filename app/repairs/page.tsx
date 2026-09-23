@@ -4,6 +4,11 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { RepairHero } from "@/components/repairs/repair-hero";
 import { WhatWeRepair } from "@/components/repairs/what-we-repair";
 import { RepairProcess } from "@/components/repairs/repair-process";
+import { WhyVandM } from "@/components/repairs/why-vandm";
+import { ShopAccessories } from "@/components/repairs/shop-accessories";
+import { QuickBooking } from "@/components/repairs/quick-booking";
+import { Testimonials } from "@/components/marketing/testimonials";
+import { RepairCta } from "@/components/repairs/repair-cta";
 
 export const metadata: Metadata = {
   title: "Tech Repair — V&M Vape | Mobile",
@@ -19,6 +24,14 @@ export default function RepairsPage() {
         <RepairHero />
         <WhatWeRepair />
         <RepairProcess />
+        <WhyVandM />
+        <ShopAccessories />
+        <QuickBooking />
+        <Testimonials
+          sectionNumber="06 — Testimonials"
+          backgroundImage="/tech/testimonial-bg.png"
+        />
+        <RepairCta />
       </main>
       <SiteFooter />
     </div>
