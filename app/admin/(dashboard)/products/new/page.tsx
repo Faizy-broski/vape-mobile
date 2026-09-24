@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getProductSections, getShopCategories } from "@/lib/data/shop-catalog";
+import { getProductSections, getShopCategories, getShopBrands } from "@/lib/data/shop-catalog";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { SupabaseSetupNotice } from "@/components/admin/supabase-setup-notice";
 import { ProductForm } from "@/components/admin/products/product-form";
@@ -17,12 +17,21 @@ export default async function NewProductPage() {
     );
   }
 
-  const [sections, categories] = await Promise.all([getProductSections(), getShopCategories()]);
+  const [sections, categories, brands] = await Promise.all([
+    getProductSections(),
+    getShopCategories(),
+    getShopBrands(),
+  ]);
 
   return (
     <div className="flex max-w-3xl flex-col gap-6">
       <h1 className="font-heading text-2xl font-black tracking-tight">New Product</h1>
-      <ProductForm action={createProductAction} sections={sections} categories={categories} />
+      <ProductForm
+        action={createProductAction}
+        sections={sections}
+        categories={categories}
+        brands={brands}
+      />
     </div>
   );
 }

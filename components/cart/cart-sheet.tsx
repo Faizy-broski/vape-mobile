@@ -109,7 +109,7 @@ export function CartSheet() {
                 Shipping and taxes calculated at checkout.
               </p>
               <Link
-                href="/vape-shop"
+                href="/checkout"
                 className={cn(buttonVariants({ variant: "default" }), "mt-4 h-11 w-full rounded-full")}
               >
                 Checkout

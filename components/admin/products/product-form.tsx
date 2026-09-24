@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -13,35 +14,84 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { ProductWithRelations } from "@/lib/data/products";
-import type { ProductSection, ShopCategory } from "@/lib/supabase/types";
+import type { ProductSection, ShopCategory, ShopBrand } from "@/lib/supabase/types";
 import type { ProductFormState } from "@/app/admin/(dashboard)/products/product-form-state";
 import { ImageUpload } from "@/components/admin/products/image-upload";
 
 const NONE = "none";
+
+function slugPreview(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
 
 export function ProductForm({
   action,
   product,
   sections,
   categories,
+  brands,
 }: {
   action: (state: ProductFormState, formData: FormData) => Promise<ProductFormState>;
   product?: ProductWithRelations;
   sections: ProductSection[];
   categories: ShopCategory[];
+  brands: ShopBrand[];
 }) {
   const [state, formAction, pending] = useActionState(action, { error: "" });
   const [image, setImage] = useState(product?.image ?? "");
   const [badge, setBadge] = useState(product?.badge ?? NONE);
   const [sectionId, setSectionId] = useState(product?.section_id ?? NONE);
   const [categoryId, setCategoryId] = useState(product?.category_id ?? NONE);
+  const [brandId, setBrandId] = useState(product?.brand_id ?? NONE);
+  const [slug, setSlug] = useState(product?.slug ?? "");
+  const [slugTouched, setSlugTouched] = useState(Boolean(product));
 
   return (
     <form action={formAction} className="flex flex-col gap-6 lg:flex-row">
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="name">Name</Label>
-          <Input id="name" name="name" defaultValue={product?.name} required />
+          <Input
+            id="name"
+            name="name"
+            defaultValue={product?.name}
+            required
+            onChange={(e) => {
+              if (!slugTouched) setSlug(slugPreview(e.target.value));
+            }}
+          />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="slug">URL slug</Label>
+          <Input
+            id="slug"
+            name="slug"
+            value={slug}
+            onChange={(e) => {
+              setSlugTouched(true);
+              setSlug(e.target.value);
+            }}
+            placeholder="auto-generated-from-name"
+          />
+          <p className="text-xs text-muted-foreground">
+            /vape-shop/product/{slug || "…"}
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="description">Description</Label>
+          <Textarea
+            id="description"
+            name="description"
+            defaultValue={product?.description ?? ""}
+            className="min-h-24"
+            placeholder="What makes this product worth buying?"
+          />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -98,7 +148,7 @@ export function ProductForm({
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 xs:grid-cols-2 lg:grid-cols-3">
           <div className="flex flex-col gap-1.5">
             <Label>Homepage section</Label>
             <Select value={sectionId ?? NONE} onValueChange={(v) => setSectionId(v ?? NONE)}>
@@ -136,6 +186,23 @@ export function ProductForm({
               name="categoryId"
               value={categoryId === NONE ? "" : categoryId}
             />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label>Brand</Label>
+            <Select value={brandId ?? NONE} onValueChange={(v) => setBrandId(v ?? NONE)}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="None" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={NONE}>None</SelectItem>
+                {brands.map((b) => (
+                  <SelectItem key={b.id} value={b.id}>
+                    {b.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <input type="hidden" name="brandId" value={brandId === NONE ? "" : brandId} />
           </div>
         </div>
 

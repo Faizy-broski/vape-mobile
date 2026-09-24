@@ -82,7 +82,7 @@ export function WhyVandM() {
                 tested in under an hour on most models.
               </p>
               <Link
-                href="/book-a-repair"
+                href="/repairs/book"
                 className="inline-flex shrink-0 items-center gap-1 text-sm font-bold text-primary uppercase tracking-wide transition-opacity hover:opacity-80"
               >
                 From £45

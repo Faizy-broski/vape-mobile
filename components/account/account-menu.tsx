@@ -2,9 +2,8 @@
 
 import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
-import { LayoutDashboard, LogOut, ShieldCheck, User } from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { LayoutDashboard, LogOut, ShieldCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,19 +31,10 @@ export function AccountMenu() {
     };
   }, []);
 
+  // No customer accounts on this site — only staff ever see this icon, and
+  // only once they're actually signed in as admin.
   if (!loggedIn) {
-    return (
-      <Link
-        href="/admin/login"
-        aria-label="Admin login"
-        className={cn(
-          buttonVariants({ variant: "ghost", size: "icon" }),
-          "hidden sm:inline-flex",
-        )}
-      >
-        <User className="size-4.5" />
-      </Link>
-    );
+    return null;
   }
 
   return (

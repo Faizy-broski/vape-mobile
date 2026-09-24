@@ -77,7 +77,10 @@ export type Product = {
   id: string;
   section_id: string | null;
   category_id: string | null;
+  brand_id: string | null;
+  slug: string;
   name: string;
+  description: string | null;
   price: number;
   old_price: number | null;
   badge: ProductBadge;

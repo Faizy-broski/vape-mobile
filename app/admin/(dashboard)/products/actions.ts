@@ -6,6 +6,7 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  slugify,
   type ProductInput,
 } from "@/lib/data/products";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -48,6 +49,8 @@ export async function uploadProductImageAction(
 
 function parseInput(formData: FormData): ProductInput | null {
   const name = String(formData.get("name") ?? "").trim();
+  const slugRaw = String(formData.get("slug") ?? "").trim();
+  const description = String(formData.get("description") ?? "").trim();
   const priceRaw = String(formData.get("price") ?? "").trim();
   const oldPriceRaw = String(formData.get("oldPrice") ?? "").trim();
   const badgeRaw = String(formData.get("badge") ?? "").trim();
@@ -56,9 +59,13 @@ function parseInput(formData: FormData): ProductInput | null {
   const isActive = formData.get("isActive") === "on";
   const sectionId = String(formData.get("sectionId") ?? "").trim();
   const categoryId = String(formData.get("categoryId") ?? "").trim();
+  const brandId = String(formData.get("brandId") ?? "").trim();
 
   const price = Number.parseFloat(priceRaw);
   if (!name || !image || !Number.isFinite(price) || price < 0) return null;
+
+  const slug = slugify(slugRaw || name);
+  if (!slug) return null;
 
   const oldPrice = oldPriceRaw ? Number.parseFloat(oldPriceRaw) : null;
   const stock = Number.parseInt(stockRaw, 10) || 0;
@@ -66,6 +73,8 @@ function parseInput(formData: FormData): ProductInput | null {
 
   return {
     name,
+    slug,
+    description: description || null,
     price,
     oldPrice: oldPrice !== null && Number.isFinite(oldPrice) ? oldPrice : null,
     badge,
@@ -74,12 +83,24 @@ function parseInput(formData: FormData): ProductInput | null {
     isActive,
     sectionId: sectionId || null,
     categoryId: categoryId || null,
+    brandId: brandId || null,
   };
+}
+
+function isUniqueViolation(error: unknown) {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as { code?: string }).code === "23505"
+  );
 }
 
 function revalidateStorefront() {
   revalidatePath("/admin/products");
   revalidatePath("/vape-shop");
+  revalidatePath("/vape-shop/category/[slug]", "page");
+  revalidatePath("/vape-shop/product/[slug]", "page");
   revalidatePath("/");
 }
 
@@ -93,6 +114,9 @@ export async function createProductAction(
   try {
     await createProduct(input);
   } catch (error) {
+    if (isUniqueViolation(error)) {
+      return { error: `The slug "${input.slug}" is already used by another product.` };
+    }
     console.error("Failed to create product:", error);
     return { error: "Something went wrong creating the product." };
   }
@@ -112,6 +136,9 @@ export async function updateProductAction(
   try {
     await updateProduct(id, input);
   } catch (error) {
+    if (isUniqueViolation(error)) {
+      return { error: `The slug "${input.slug}" is already used by another product.` };
+    }
     console.error("Failed to update product:", error);
     return { error: "Something went wrong updating the product." };
   }

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getProduct } from "@/lib/data/products";
-import { getProductSections, getShopCategories } from "@/lib/data/shop-catalog";
+import { getProductSections, getShopCategories, getShopBrands } from "@/lib/data/shop-catalog";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { SupabaseSetupNotice } from "@/components/admin/supabase-setup-notice";
 import { ProductForm } from "@/components/admin/products/product-form";
@@ -24,10 +24,11 @@ export default async function EditProductPage({
   }
 
   const { id } = await params;
-  const [product, sections, categories] = await Promise.all([
+  const [product, sections, categories, brands] = await Promise.all([
     getProduct(id),
     getProductSections(),
     getShopCategories(),
+    getShopBrands(),
   ]);
 
   if (!product) notFound();
@@ -42,6 +43,7 @@ export default async function EditProductPage({
         product={product}
         sections={sections}
         categories={categories}
+        brands={brands}
       />
     </div>
   );

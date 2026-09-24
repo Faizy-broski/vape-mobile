@@ -44,7 +44,7 @@ export function RepairHero() {
 
           <div className="mt-6 flex flex-col gap-3 xs:flex-row sm:mt-8">
             <Link
-              href="/book-a-repair"
+              href="/repairs/book"
               className={cn(
                 buttonVariants({ variant: "default" }),
                 "h-auto rounded-full bg-white px-6 py-3.5 text-sm text-black hover:bg-white/90",

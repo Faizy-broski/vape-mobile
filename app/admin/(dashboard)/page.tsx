@@ -7,13 +7,16 @@ import {
   XCircle,
   ChevronRight,
   Package,
+  ShoppingBag,
 } from "lucide-react";
 import { getBookingStats, listBookings } from "@/lib/data/bookings";
 import { listProducts } from "@/lib/data/products";
+import { listOrders, getOrderStats } from "@/lib/data/orders";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { SupabaseSetupNotice } from "@/components/admin/supabase-setup-notice";
 import { StatCard } from "@/components/admin/stat-card";
 import { BookingsTable } from "@/components/admin/bookings/bookings-table";
+import { OrdersTable } from "@/components/admin/orders/orders-table";
 
 export const metadata: Metadata = { title: "Dashboard — Admin" };
 
@@ -27,10 +30,25 @@ export default async function AdminDashboardPage() {
     );
   }
 
-  const [stats, recent, products] = await Promise.all([
+  const [stats, recentBookings, products, recentOrders, orderStats] = await Promise.all([
     getBookingStats(),
     listBookings().then((b) => b.slice(0, 6)),
-    listProducts(),
+    // brand_id/slug are a newer migration — don't let a not-yet-run
+    // migration break the whole dashboard.
+    listProducts().catch(() => []),
+    // The orders table is a newer migration — don't let a not-yet-run
+    // migration break the whole dashboard.
+    listOrders()
+      .then((o) => o.slice(0, 6))
+      .catch(() => []),
+    getOrderStats().catch(() => ({
+      total: 0,
+      new: 0,
+      processing: 0,
+      ready: 0,
+      completed: 0,
+      cancelled: 0,
+    })),
   ]);
 
   return (
@@ -38,11 +56,11 @@ export default async function AdminDashboardPage() {
       <div>
         <h1 className="font-heading text-2xl font-black tracking-tight">Dashboard</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Overview of repair booking activity.
+          Overview of repair booking and order activity.
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-6">
         <StatCard
           label="Total Bookings"
           value={stats.total}
@@ -70,13 +88,22 @@ export default async function AdminDashboardPage() {
           accentClassName="bg-primary/10 text-primary"
           delay={0.15}
         />
+        <Link href="/admin/orders" className="block">
+          <StatCard
+            label="Orders"
+            value={orderStats.total}
+            icon={<ShoppingBag />}
+            accentClassName="bg-orange-500/10 text-orange-600"
+            delay={0.2}
+          />
+        </Link>
         <Link href="/admin/products" className="block">
           <StatCard
             label="Products"
             value={products.length}
             icon={<Package />}
             accentClassName="bg-violet-500/10 text-violet-600"
-            delay={0.2}
+            delay={0.25}
           />
         </Link>
       </div>
@@ -102,7 +129,23 @@ export default async function AdminDashboardPage() {
           </Link>
         </div>
         <div className="mt-4">
-          <BookingsTable bookings={recent} />
+          <BookingsTable bookings={recentBookings} />
+        </div>
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between">
+          <h2 className="font-heading text-lg font-bold tracking-tight">Recent Orders</h2>
+          <Link
+            href="/admin/orders"
+            className="inline-flex items-center gap-0.5 text-xs font-semibold text-primary hover:underline"
+          >
+            View all
+            <ChevronRight className="size-3.5" />
+          </Link>
+        </div>
+        <div className="mt-4">
+          <OrdersTable orders={recentOrders} />
         </div>
       </div>
     </div>

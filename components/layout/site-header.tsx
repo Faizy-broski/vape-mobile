@@ -69,7 +69,7 @@ export function SiteHeader() {
           <AccountMenu />
 
           <Link
-            href="/book-a-repair"
+            href="/repairs/book"
             className={cn(
               buttonVariants({ variant: "default" }),
               "ml-2 hidden rounded-full px-5 sm:inline-flex",
@@ -100,7 +100,7 @@ export function SiteHeader() {
                   </Link>
                 ))}
                 <Link
-                  href="/book-a-repair"
+                  href="/repairs/book"
                   onClick={() => setOpen(false)}
                   className={cn(buttonVariants({ variant: "default" }), "mt-4 rounded-full")}
                 >

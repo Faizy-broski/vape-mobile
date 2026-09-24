@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ClipboardList, LayoutDashboard, LogOut, Package, Wrench } from "lucide-react";
+import { ClipboardList, LayoutDashboard, LogOut, Package, ShoppingBag, Wrench } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -20,6 +20,7 @@ import { logoutAdmin } from "@/app/admin/login/actions";
 const NAV_ITEMS = [
   { title: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { title: "Bookings", href: "/admin/bookings", icon: ClipboardList },
+  { title: "Orders", href: "/admin/orders", icon: ShoppingBag },
   { title: "Products", href: "/admin/products", icon: Package },
   { title: "Catalog", href: "/admin/catalog", icon: Wrench },
 ];

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Pencil } from "lucide-react";
+import { ExternalLink, Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { ProductWithRelations } from "@/lib/data/products";
 import { DeleteProductButton } from "@/components/admin/products/delete-product-button";
@@ -85,6 +85,16 @@ export function ProductsTable({ products }: { products: ProductWithRelations[] }
               </td>
               <td className="px-4 py-3">
                 <div className="flex items-center justify-end gap-1">
+                  {product.is_active && (
+                    <Link
+                      href={`/vape-shop/product/${product.slug}`}
+                      target="_blank"
+                      aria-label={`View ${product.name} on the storefront`}
+                      className="flex size-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    >
+                      <ExternalLink className="size-4" />
+                    </Link>
+                  )}
                   <Link
                     href={`/admin/products/${product.id}/edit`}
                     aria-label={`Edit ${product.name}`}
