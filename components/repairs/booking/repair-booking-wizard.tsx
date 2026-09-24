@@ -16,20 +16,29 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import {
-  submitRepairBooking,
-  initialBookingState,
-} from "@/app/repairs/book/actions";
-import {
-  BRANDS_BY_DEVICE,
-  DEVICES,
-  ISSUES,
-  STORES,
-} from "@/components/repairs/booking/booking-data";
+import { submitRepairBooking } from "@/app/repairs/book/actions";
+import { initialBookingState } from "@/app/repairs/book/booking-state";
+import type { RepairDevice } from "@/lib/supabase/types";
 
 const STEP_LABELS = ["Device", "Brand", "Issue", "Your Details", "Review"];
 
-export function RepairBookingWizard({ initialDevice }: { initialDevice: string }) {
+type Catalog = {
+  devices: RepairDevice[];
+  brandsByDevice: Record<string, string[]>;
+  issues: string[];
+  stores: string[];
+};
+
+export function RepairBookingWizard({
+  initialDevice,
+  catalog,
+}: {
+  initialDevice: string;
+  catalog: Catalog;
+}) {
+  const { devices: DEVICES, brandsByDevice: BRANDS_BY_DEVICE, issues: ISSUES, stores: STORES } =
+    catalog;
+
   const [step, setStep] = useState(0);
   const [device, setDevice] = useState(initialDevice);
   const [brand, setBrand] = useState("");
@@ -37,7 +46,7 @@ export function RepairBookingWizard({ initialDevice }: { initialDevice: string }
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [store, setStore] = useState(STORES[0]);
+  const [store, setStore] = useState(STORES[0] ?? "");
   const [notes, setNotes] = useState("");
 
   const [state, formAction, pending] = useActionState(
@@ -47,7 +56,7 @@ export function RepairBookingWizard({ initialDevice }: { initialDevice: string }
 
   const brandOptions = useMemo(
     () => BRANDS_BY_DEVICE[device] ?? [],
-    [device],
+    [device, BRANDS_BY_DEVICE],
   );
   const selectedDeviceName =
     DEVICES.find((d) => d.slug === device)?.name ?? device;

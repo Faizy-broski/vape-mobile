@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { RepairBookingWizard } from "@/components/repairs/booking/repair-booking-wizard";
-import { getDeviceBySlug } from "@/components/repairs/booking/booking-data";
+import { getCatalog, getDeviceBySlug } from "@/lib/data/repair-catalog";
+import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { SupabaseSetupNotice } from "@/components/admin/supabase-setup-notice";
 
 export const metadata: Metadata = {
   title: "Book a Repair — V&M Vape | Mobile",
@@ -15,7 +17,10 @@ export default async function BookRepairPage({
   searchParams: Promise<{ device?: string }>;
 }) {
   const { device } = await searchParams;
-  const initialDevice = getDeviceBySlug(device).slug;
+  const configured = isSupabaseConfigured();
+  const catalog = configured ? await getCatalog() : null;
+  const selectedDevice = configured ? await getDeviceBySlug(device) : null;
+  const initialDevice = selectedDevice?.slug ?? catalog?.devices[0]?.slug ?? "";
 
   return (
     <div className="flex flex-1 flex-col">
@@ -34,7 +39,11 @@ export default async function BookRepairPage({
             </p>
 
             <div className="mt-10 rounded-[2rem] bg-[oklch(0.98_0.01_95)] p-6 ring-1 ring-foreground/5 xs:p-8 sm:p-10">
-              <RepairBookingWizard initialDevice={initialDevice} />
+              {catalog ? (
+                <RepairBookingWizard initialDevice={initialDevice} catalog={catalog} />
+              ) : (
+                <SupabaseSetupNotice />
+              )}
             </div>
           </div>
         </section>

@@ -4,9 +4,10 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { ChevronRight, Mail, Minus, Plus, Share2 } from "lucide-react";
+import { Check, ChevronRight, Mail, Minus, Plus, Share2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useCart } from "@/lib/cart/cart-context";
 import {
   Select,
   SelectContent,
@@ -26,6 +27,22 @@ const GALLERY = ["/vape/vapes/9.png", "/vape/vapes/1.png", "/vape/vapes/3.png"];
 export function FeaturedProduct() {
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(GALLERY[0]);
+  const { addItem } = useCart();
+  const [added, setAdded] = useState(false);
+
+  function handleAddToCart() {
+    addItem(
+      {
+        id: "ske-cl2000",
+        name: "SKE CL2000 Prefilled Pod Vape Kit",
+        price: "£5.99",
+        image: activeImage,
+      },
+      quantity,
+    );
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1500);
+  }
 
   return (
     <section className="wrap py-6 sm:py-8">
@@ -153,9 +170,11 @@ export function FeaturedProduct() {
           <div className="mt-6 flex flex-col gap-4 xs:flex-row xs:items-center">
             <button
               type="button"
+              onClick={handleAddToCart}
               className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
             >
-              Add to Cart
+              {added ? <Check className="size-4" /> : null}
+              {added ? "Added to Cart" : "Add to Cart"}
             </button>
 
             <div className="flex items-center gap-3">

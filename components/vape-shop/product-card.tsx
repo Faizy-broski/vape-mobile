@@ -1,11 +1,27 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
-import { Plus } from "lucide-react";
+import { Check, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import type { Product } from "@/components/vape-shop/product-data";
+import { useCart } from "@/lib/cart/cart-context";
+import type { Product } from "@/lib/supabase/types";
 
 export function ProductCard({ product }: { product: Product }) {
+  const { addItem } = useCart();
+  const [added, setAdded] = useState(false);
+
+  const price = `£${product.price.toFixed(2)}`;
+  const oldPrice = product.old_price ? `£${product.old_price.toFixed(2)}` : null;
+
+  function handleAddToCart() {
+    addItem({ id: product.id, name: product.name, price, image: product.image });
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1500);
+  }
+
   return (
     <Card className="gap-0 py-0">
       <div className="relative aspect-square overflow-hidden rounded-t-xl bg-[radial-gradient(circle_at_35%_25%,var(--color-secondary)_0%,var(--color-muted)_70%)]">
@@ -34,22 +50,24 @@ export function ProductCard({ product }: { product: Product }) {
         </p>
 
         <div className="flex items-baseline gap-1.5">
-          <span className="text-sm font-bold text-foreground xs:text-base">
-            {product.price}
-          </span>
-          {product.oldPrice && (
-            <span className="text-xs text-muted-foreground line-through">
-              {product.oldPrice}
-            </span>
+          <span className="text-sm font-bold text-foreground xs:text-base">{price}</span>
+          {oldPrice && (
+            <span className="text-xs text-muted-foreground line-through">{oldPrice}</span>
           )}
         </div>
 
         <button
           type="button"
-          className="mt-auto inline-flex h-9 items-center justify-center gap-1.5 rounded-full bg-primary text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90 xs:h-10 xs:text-sm"
+          onClick={handleAddToCart}
+          className={cn(
+            "mt-auto inline-flex h-9 items-center justify-center gap-1.5 rounded-full text-xs font-semibold transition-colors xs:h-10 xs:text-sm",
+            added
+              ? "bg-primary/15 text-primary"
+              : "bg-primary text-primary-foreground hover:bg-primary/90",
+          )}
         >
-          <Plus className="size-3.5 xs:size-4" />
-          Add to Cart
+          {added ? <Check className="size-3.5 xs:size-4" /> : <Plus className="size-3.5 xs:size-4" />}
+          {added ? "Added" : "Add to Cart"}
         </button>
       </CardContent>
     </Card>

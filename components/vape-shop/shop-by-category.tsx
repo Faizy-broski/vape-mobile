@@ -3,47 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
+import type { ShopCategory } from "@/lib/supabase/types";
 
-type Category = {
-  name: string;
-  href: string;
-  image: string;
-};
-
-const CATEGORIES: Category[] = [
-  { name: "Vape Kits", href: "/vape-shop/category/vape-kits", image: "/vape/vapes/1.png" },
-  {
-    name: "600 Puff Kits & Pods",
-    href: "/vape-shop/category/600-puff-kits-pods",
-    image: "/vape/vapes/2.png",
-  },
-  {
-    name: "Big Puff Kits & Pods",
-    href: "/vape-shop/category/big-puff-kits-pods",
-    image: "/vape/vapes/3.png",
-  },
-  { name: "Vape Juice", href: "/vape-shop/category/vape-juice", image: "/vape/vapes/4.png" },
-  { name: "Nic Salts", href: "/vape-shop/category/nic-salts", image: "/vape/vapes/5.png" },
-  {
-    name: "50ml Shortfill",
-    href: "/vape-shop/category/50ml-shortfill",
-    image: "/vape/vapes/6.png",
-  },
-  {
-    name: "100ml Shortfill",
-    href: "/vape-shop/category/100ml-shortfill",
-    image: "/vape/vapes/7.png",
-  },
-  { name: "Coils", href: "/vape-shop/category/coils", image: "/vape/vapes/8.png" },
-  { name: "Spare Pods", href: "/vape-shop/category/spare-pods", image: "/vape/vapes/9.png" },
-  {
-    name: "Nicotine Pouches",
-    href: "/vape-shop/category/nicotine-pouches",
-    image: "/vape/vapes/10.png",
-  },
-];
-
-export function ShopByCategory() {
+export function ShopByCategory({ categories }: { categories: ShopCategory[] }) {
   return (
     <section className="relative overflow-hidden">
       <Image
@@ -76,16 +38,16 @@ export function ShopByCategory() {
         </motion.h2>
 
         <div className="mt-8 grid grid-cols-2 gap-3 xs:gap-4 sm:mt-10 sm:grid-cols-3 sm:gap-5 lg:grid-cols-5">
-          {CATEGORIES.map((category, i) => (
+          {categories.map((category, i) => (
             <motion.div
-              key={category.href}
+              key={category.slug}
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.4, delay: (i % 5) * 0.05 }}
             >
               <Link
-                href={category.href}
+                href={`/vape-shop/category/${category.slug}`}
                 className="group relative flex aspect-square flex-col justify-end overflow-hidden rounded-xl bg-black outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <Image

@@ -4,22 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { ChevronRight } from "lucide-react";
+import type { ShopBrand } from "@/lib/supabase/types";
 
-type Brand = {
-  name: string;
-  image: string;
-};
-
-const BRANDS: Brand[] = [
-  { name: "Vampire Vape", image: "/vape/categories/vampire-vape.png" },
-  { name: "Ohm Brew", image: "/vape/categories/ohm-brew.png" },
-  { name: "Lost Mary", image: "/vape/categories/lost-mary.png" },
-  { name: "Zeus Juice", image: "/vape/categories/zeus-juice.png" },
-  { name: "SKE", image: "/vape/categories/ske.png" },
-  { name: "Yeti", image: "/vape/categories/yeti.png" },
-];
-
-export function BrandStrip() {
+export function BrandStrip({ brands }: { brands: ShopBrand[] }) {
   return (
     <section className="wrap py-6 sm:py-8">
       <span className="inline-block text-xs font-semibold tracking-[0.2em] text-accent uppercase">
@@ -39,7 +26,7 @@ export function BrandStrip() {
       </div>
 
       <div className="mt-6 grid grid-cols-3 gap-4 xs:gap-5 sm:mt-8 sm:grid-cols-6 sm:gap-6">
-        {BRANDS.map((brand, i) => (
+        {brands.map((brand, i) => (
           <motion.div
             key={brand.name}
             initial={{ opacity: 0, y: 16 }}

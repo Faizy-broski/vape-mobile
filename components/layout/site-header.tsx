@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { motion } from "motion/react";
-import { Menu, Search, ShoppingCart, User } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -14,6 +14,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { CartSheet } from "@/components/cart/cart-sheet";
+import { SearchDialog } from "@/components/search/search-dialog";
+import { AccountMenu } from "@/components/account/account-menu";
 
 const NAV_LINKS = [
   { label: "Repairs", href: "/repairs" },
@@ -61,18 +64,9 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-1.5">
-          <Button variant="ghost" size="icon" className="hidden sm:inline-flex" aria-label="Search">
-            <Search className="size-4.5" />
-          </Button>
-          <Button variant="ghost" size="icon" className="relative hidden sm:inline-flex" aria-label="Cart">
-            <ShoppingCart className="size-4.5" />
-            <span className="absolute -top-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-accent text-[10px] font-semibold text-accent-foreground">
-              0
-            </span>
-          </Button>
-          <Button variant="ghost" size="icon" className="hidden sm:inline-flex" aria-label="Account">
-            <User className="size-4.5" />
-          </Button>
+          <SearchDialog />
+          <CartSheet />
+          <AccountMenu />
 
           <Link
             href="/book-a-repair"
