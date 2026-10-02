@@ -8,6 +8,7 @@ import {
   deleteProduct,
   slugify,
   type ProductInput,
+  type VariantInput,
 } from "@/lib/data/products";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { ProductBadge } from "@/lib/supabase/types";
@@ -47,7 +48,53 @@ export async function uploadProductImageAction(
   return { url: data.publicUrl };
 }
 
-function parseInput(formData: FormData): ProductInput | null {
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Parses the variants editor's JSON field; returns null if any row is invalid. */
+function parseVariants(raw: string): VariantInput[] | null {
+  let rows: unknown;
+  try {
+    rows = JSON.parse(raw || "[]");
+  } catch {
+    return null;
+  }
+  if (!Array.isArray(rows)) return null;
+
+  const variants: VariantInput[] = [];
+  const names = new Set<string>();
+  for (const row of rows as Record<string, unknown>[]) {
+    const name = String(row.name ?? "").trim();
+    const price = Number.parseFloat(String(row.price ?? ""));
+    const oldPriceRaw = String(row.oldPrice ?? "").trim();
+    const oldPrice = oldPriceRaw ? Number.parseFloat(oldPriceRaw) : null;
+    const stock = Number.parseInt(String(row.stock ?? "0"), 10) || 0;
+    const id = typeof row.id === "string" && UUID_PATTERN.test(row.id) ? row.id : null;
+
+    if (!name || !Number.isFinite(price) || price < 0) return null;
+    if (names.has(name.toLowerCase())) return null;
+    names.add(name.toLowerCase());
+
+    variants.push({
+      id,
+      name,
+      price,
+      oldPrice: oldPrice !== null && Number.isFinite(oldPrice) ? oldPrice : null,
+      stock: Math.max(0, stock),
+      isActive: row.isActive !== false,
+    });
+  }
+  return variants;
+}
+
+const INVALID_INPUT = "Please fill in a name, image and a valid price.";
+const INVALID_VARIANTS =
+  "Every option needs a unique name and a valid price — check the Options list.";
+
+/** Returns the parsed input, or an error message to show on the form. */
+function parseInput(formData: FormData): ProductInput | string {
+  const variants = parseVariants(String(formData.get("variants") ?? "[]"));
+  if (!variants) return INVALID_VARIANTS;
+
   const name = String(formData.get("name") ?? "").trim();
   const slugRaw = String(formData.get("slug") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
@@ -61,11 +108,12 @@ function parseInput(formData: FormData): ProductInput | null {
   const categoryId = String(formData.get("categoryId") ?? "").trim();
   const brandId = String(formData.get("brandId") ?? "").trim();
 
-  const price = Number.parseFloat(priceRaw);
-  if (!name || !image || !Number.isFinite(price) || price < 0) return null;
+  // With options, the product price comes from the cheapest option instead.
+  const price = variants.length > 0 ? 0 : Number.parseFloat(priceRaw);
+  if (!name || !image || !Number.isFinite(price) || price < 0) return INVALID_INPUT;
 
   const slug = slugify(slugRaw || name);
-  if (!slug) return null;
+  if (!slug) return INVALID_INPUT;
 
   const oldPrice = oldPriceRaw ? Number.parseFloat(oldPriceRaw) : null;
   const stock = Number.parseInt(stockRaw, 10) || 0;
@@ -84,6 +132,7 @@ function parseInput(formData: FormData): ProductInput | null {
     sectionId: sectionId || null,
     categoryId: categoryId || null,
     brandId: brandId || null,
+    variants,
   };
 }
 
@@ -109,7 +158,7 @@ export async function createProductAction(
   formData: FormData,
 ): Promise<ProductFormState> {
   const input = parseInput(formData);
-  if (!input) return { error: "Please fill in a name, image and a valid price." };
+  if (typeof input === "string") return { error: input };
 
   try {
     await createProduct(input);
@@ -131,7 +180,7 @@ export async function updateProductAction(
   formData: FormData,
 ): Promise<ProductFormState> {
   const input = parseInput(formData);
-  if (!input) return { error: "Please fill in a name, image and a valid price." };
+  if (typeof input === "string") return { error: input };
 
   try {
     await updateProduct(id, input);

@@ -21,6 +21,10 @@ order (they're numbered, so alphabetical order is correct):
 4. `20260101000004_products.sql`
 5. `20260101000005_rls_policies.sql`
 6. `20260101000006_seed_data.sql`
+7. `20260101000007_product_image_storage.sql`
+8. `20260101000008_orders.sql`
+9. `20260101000009_product_details.sql`
+10. `20260101000010_product_variants.sql`
 
 **Option B — Supabase CLI**
 
@@ -54,3 +58,25 @@ Add all three to `.env.local` (see `.env.example`).
   changes, new bookings) goes through the service-role client from a Server
   Action — never directly from the browser — so RLS never needs
   INSERT/UPDATE/DELETE policies for the anon role.
+
+## Importing the V&M Online catalogue
+
+`scripts/import-vandm.mjs` copies the vape products (not the mobile
+products) from https://www.vandmonline.co.uk — a Shopify store — into
+`products` and `product_variants`, creates any missing brands, and copies
+every product image into the `product-images` bucket. It needs
+`NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in `.env.local`
+and migration `20260101000010_product_variants.sql` applied.
+
+```bash
+pnpm import:vandm                      # dry run: prints counts, writes .import-cache/vandm/preview.json
+pnpm import:vandm --write --limit 5    # import 5 products to check they look right
+pnpm import:vandm --write              # import everything
+pnpm import:vandm --write --refresh    # later: re-download the source and sync prices/stock
+```
+
+Category comes from the product title (the source store's own collections
+are mis-tagged) — the rules are at the top of the script. Shopify doesn't
+publish stock counts, so in-stock options get a stock of 10 and sold-out
+ones 0. Re-running overwrites imported fields (name, description, price,
+image, category, brand) but never homepage section or sort order.

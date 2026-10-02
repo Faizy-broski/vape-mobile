@@ -73,6 +73,9 @@ export function CartSheet() {
                         <Trash2 className="size-4" />
                       </button>
                     </div>
+                    {item.variantName && (
+                      <p className="text-xs text-muted-foreground">{item.variantName}</p>
+                    )}
                     <p className="text-xs text-muted-foreground">{item.price}</p>
                     <div className="mt-1 inline-flex w-fit items-center rounded-full border border-input">
                       <button

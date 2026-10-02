@@ -8,23 +8,23 @@ import { motion } from "motion/react";
 import { CircleCheck, ShoppingBag } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useCart } from "@/lib/cart/cart-context";
+import { parsePrice, useCart } from "@/lib/cart/cart-context";
 import { submitOrder } from "@/app/checkout/actions";
 import { initialCheckoutState } from "@/app/checkout/checkout-state";
 
-function parsePrice(price: string) {
-  const value = Number.parseFloat(price.replace(/[^0-9.]/g, ""));
-  return Number.isFinite(value) ? value : 0;
-}
-
 export function CheckoutForm() {
-  const { items, subtotal, clearCart } = useCart();
+  const { items, subtotal, clearCart, applyPriceUpdates } = useCart();
   const [state, formAction, pending] = useActionState(submitOrder, initialCheckoutState);
 
   useEffect(() => {
     if (state.status === "success") clearCart();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.status]);
+
+  useEffect(() => {
+    if (state.cartUpdates?.length) applyPriceUpdates(state.cartUpdates);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.cartUpdates]);
 
   if (state.status === "success") {
     return (
@@ -70,8 +70,19 @@ export function CheckoutForm() {
 
   return (
     <form action={formAction} className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_22rem]">
-      <input type="hidden" name="items" value={JSON.stringify(items)} />
-      <input type="hidden" name="subtotal" value={subtotal} />
+      <input
+        type="hidden"
+        name="items"
+        value={JSON.stringify(
+          items.map(({ id, productId, variantId, price, quantity }) => ({
+            id,
+            productId,
+            variantId,
+            price,
+            quantity,
+          })),
+        )}
+      />
 
       <motion.div
         initial={{ opacity: 0, y: 16 }}
@@ -156,6 +167,9 @@ export function CheckoutForm() {
               </div>
               <div className="flex flex-1 flex-col">
                 <p className="text-sm font-medium">{item.name}</p>
+                {item.variantName && (
+                  <p className="text-xs text-muted-foreground">{item.variantName}</p>
+                )}
                 <p className="text-xs text-muted-foreground">
                   {item.quantity} × {item.price}
                 </p>

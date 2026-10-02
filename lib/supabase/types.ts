@@ -92,6 +92,20 @@ export type Product = {
   updated_at: string;
 };
 
+export type ProductVariant = {
+  id: string;
+  product_id: string;
+  name: string;
+  price: number;
+  old_price: number | null;
+  stock: number;
+  image: string | null;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
 // Note: the Supabase clients in this app (see server.ts / admin.ts /
 // client.ts) are intentionally NOT parameterized with a generated
 // `Database` type — supabase-js's generic constraints are fussy to satisfy

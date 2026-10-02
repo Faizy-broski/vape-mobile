@@ -4,45 +4,25 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { Check, ChevronRight, Mail, Minus, Plus, Share2 } from "lucide-react";
+import { ChevronRight, Mail, Share2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { useCart } from "@/lib/cart/cart-context";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { ProductDetailActions } from "@/components/vape-shop/product-detail/product-detail-actions";
+import type { ProductDetail } from "@/lib/data/products";
 import { cn } from "@/lib/utils";
 
-const FLAVOURS = ["Banana", "Blue Razz", "Watermelon Ice", "Strawberry Kiwi"];
 const SHARE_LINKS = [
   { icon: Share2, label: "Share" },
   { icon: Mail, label: "Email" },
 ];
-const GALLERY = ["/vape/vapes/9.png", "/vape/vapes/1.png", "/vape/vapes/3.png"];
 
-export function FeaturedProduct() {
-  const [quantity, setQuantity] = useState(1);
-  const [activeImage, setActiveImage] = useState(GALLERY[0]);
-  const { addItem } = useCart();
-  const [added, setAdded] = useState(false);
-
-  function handleAddToCart() {
-    addItem(
-      {
-        id: "ske-cl2000",
-        name: "SKE CL2000 Prefilled Pod Vape Kit",
-        price: "£5.99",
-        image: activeImage,
-      },
-      quantity,
-    );
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1500);
-  }
+export function FeaturedProduct({ product }: { product: ProductDetail }) {
+  // The product photo plus any distinct per-option photos, as a small gallery.
+  const gallery = [
+    ...new Set([product.image, ...product.variants.flatMap((v) => (v.image ? [v.image] : []))]),
+  ].slice(0, 4);
+  const [activeImage, setActiveImage] = useState(gallery[0]);
+  const href = `/vape-shop/product/${product.slug}`;
 
   return (
     <section className="wrap py-6 sm:py-8">
@@ -51,7 +31,7 @@ export function FeaturedProduct() {
           Best Value Big Puff Vape
         </h2>
         <Link
-          href="/vape-shop/product/ske-cl2000"
+          href={href}
           className="inline-flex shrink-0 items-center gap-0.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase transition-colors hover:text-foreground xs:text-sm"
         >
           View Detail
@@ -68,25 +48,27 @@ export function FeaturedProduct() {
       >
         <div>
           <div className="flex gap-3">
-            <div className="hidden flex-col gap-3 xs:flex">
-              {GALLERY.map((src) => (
-                <button
-                  key={src}
-                  type="button"
-                  onClick={() => setActiveImage(src)}
-                  className={cn(
-                    "relative flex size-14 items-center justify-center overflow-hidden rounded-lg bg-muted ring-1 ring-border transition-colors hover:ring-primary/50 sm:size-16",
-                    activeImage === src && "ring-2 ring-primary",
-                  )}
-                >
-                  <Image src={src} alt="" fill sizes="64px" className="object-contain p-1.5" />
-                </button>
-              ))}
-            </div>
+            {gallery.length > 1 && (
+              <div className="hidden flex-col gap-3 xs:flex">
+                {gallery.map((src) => (
+                  <button
+                    key={src}
+                    type="button"
+                    onClick={() => setActiveImage(src)}
+                    className={cn(
+                      "relative flex size-14 items-center justify-center overflow-hidden rounded-lg bg-muted ring-1 ring-border transition-colors hover:ring-primary/50 sm:size-16",
+                      activeImage === src && "ring-2 ring-primary",
+                    )}
+                  >
+                    <Image src={src} alt="" fill sizes="64px" className="object-contain p-1.5" />
+                  </button>
+                ))}
+              </div>
+            )}
             <div className="relative aspect-square flex-1 overflow-hidden rounded-xl bg-[radial-gradient(circle_at_35%_25%,var(--color-secondary)_0%,var(--color-muted)_75%)]">
               <Image
                 src={activeImage}
-                alt="SKE CL2000 Prefilled Pod Vape Kit"
+                alt={product.name}
                 fill
                 sizes="(min-width: 768px) 40vw, 90vw"
                 className="object-contain p-6 transition-transform duration-500 hover:scale-110"
@@ -100,95 +82,52 @@ export function FeaturedProduct() {
 
         <div className="flex flex-col">
           <h3 className="font-heading text-xl font-bold tracking-tight xs:text-2xl">
-            SKE CL2000 Prefilled Pod Vape Kit
+            <Link href={href} className="hover:text-primary">
+              {product.name}
+            </Link>
           </h3>
 
           <div className="mt-3 flex flex-wrap gap-2">
-            <Badge className="border-transparent bg-destructive text-white">
-              5 for £5
-            </Badge>
-            <Badge className="border-transparent bg-neutral-900 text-white">
-              Hot Seller
-            </Badge>
+            {product.badge && (
+              <Badge
+                className={cn(
+                  "border-transparent text-white",
+                  product.badge === "Sale" ? "bg-destructive" : "bg-primary",
+                )}
+              >
+                {product.badge}
+              </Badge>
+            )}
+            <Badge className="border-transparent bg-neutral-900 text-white">Hot Seller</Badge>
           </div>
 
           <p className="mt-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-            V &amp; M Online Shop
+            {product.brand?.name ?? "V & M Online Shop"}
           </p>
 
           <Separator className="my-5" />
 
-          <div className="flex flex-col gap-4">
-            <div>
-              <label className="text-sm font-semibold text-foreground">
-                Flavour: <span className="font-normal text-muted-foreground">Banana</span>
-              </label>
-              <Select defaultValue="Banana">
-                <SelectTrigger className="mt-2 w-full xs:w-48">
-                  <SelectValue placeholder="Select flavour" />
-                </SelectTrigger>
-                <SelectContent>
-                  {FLAVOURS.map((flavour) => (
-                    <SelectItem key={flavour} value={flavour}>
-                      {flavour}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <ProductDetailActions
+            id={product.id}
+            name={product.name}
+            price={product.price}
+            oldPrice={product.old_price}
+            image={product.image}
+            stock={product.stock}
+            variants={product.variants}
+          />
 
-            <p className="text-sm font-semibold text-foreground">
-              Price: <span className="font-bold">£5.99</span>
-            </p>
-
-            <div>
-              <p className="mb-2 text-sm font-semibold text-foreground">Quantity:</p>
-              <div className="inline-flex items-center rounded-full border border-input">
-                <button
-                  type="button"
-                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="flex size-9 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
-                  aria-label="Decrease quantity"
-                >
-                  <Minus className="size-3.5" />
-                </button>
-                <span className="w-8 text-center text-sm font-semibold tabular-nums">
-                  {quantity}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setQuantity((q) => q + 1)}
-                  className="flex size-9 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
-                  aria-label="Increase quantity"
-                >
-                  <Plus className="size-3.5" />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-6 flex flex-col gap-4 xs:flex-row xs:items-center">
-            <button
-              type="button"
-              onClick={handleAddToCart}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-            >
-              {added ? <Check className="size-4" /> : null}
-              {added ? "Added to Cart" : "Add to Cart"}
-            </button>
-
-            <div className="flex items-center gap-3">
-              {SHARE_LINKS.map(({ icon: Icon, label }) => (
-                <button
-                  key={label}
-                  type="button"
-                  aria-label={label}
-                  className="flex size-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                >
-                  <Icon className="size-4" />
-                </button>
-              ))}
-            </div>
+          <div className="mt-4 flex items-center gap-3">
+            {SHARE_LINKS.map(({ icon: Icon, label }) => (
+              <button
+                key={label}
+                type="button"
+                aria-label={label}
+                className="flex size-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                <Icon className="size-4" />
+              </button>
+            ))}
           </div>
         </div>
       </motion.div>

@@ -10,28 +10,42 @@ import {
 } from "react";
 
 export type CartItem = {
+  /** Cart line key: `productId` or `productId:variantId`. */
   id: string;
+  productId: string;
+  variantId: string | null;
   name: string;
+  variantName: string | null;
   price: string;
   image?: string;
   quantity: number;
 };
 
+export type NewCartItem = Omit<CartItem, "id" | "quantity">;
+
 type CartContextValue = {
   items: CartItem[];
-  addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
+  addItem: (item: NewCartItem, quantity?: number) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
+  /** Applies checkout's price corrections; a null price removes the line. */
+  applyPriceUpdates: (updates: { id: string; price: string | null }[]) => void;
   itemCount: number;
   subtotal: number;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
 
-const STORAGE_KEY = "vm-cart";
+// Bumped from "vm-cart" when cart lines gained productId/variantId — old
+// carts can't be priced at checkout, so they're dropped rather than migrated.
+const STORAGE_KEY = "vm-cart-v2";
 
-function parsePrice(price: string) {
+export function cartLineId(productId: string, variantId: string | null) {
+  return variantId ? `${productId}:${variantId}` : productId;
+}
+
+export function parsePrice(price: string) {
   const value = Number.parseFloat(price.replace(/[^0-9.]/g, ""));
   return Number.isFinite(value) ? value : 0;
 }
@@ -62,15 +76,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [items, hydrated]);
 
-  function addItem(item: Omit<CartItem, "quantity">, quantity = 1) {
+  function addItem(item: NewCartItem, quantity = 1) {
+    const id = cartLineId(item.productId, item.variantId);
     setItems((prev) => {
-      const existing = prev.find((i) => i.id === item.id);
+      const existing = prev.find((i) => i.id === id);
       if (existing) {
-        return prev.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i,
-        );
+        return prev.map((i) => (i.id === id ? { ...i, quantity: i.quantity + quantity } : i));
       }
-      return [...prev, { ...item, quantity }];
+      return [...prev, { ...item, id, quantity }];
     });
   }
 
@@ -90,6 +103,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems([]);
   }
 
+  function applyPriceUpdates(updates: { id: string; price: string | null }[]) {
+    const byId = new Map(updates.map((u) => [u.id, u.price]));
+    setItems((prev) =>
+      prev.flatMap((i) => {
+        if (!byId.has(i.id)) return [i];
+        const price = byId.get(i.id);
+        return price ? [{ ...i, price }] : [];
+      }),
+    );
+  }
+
   const itemCount = useMemo(
     () => items.reduce((sum, i) => sum + i.quantity, 0),
     [items],
@@ -101,7 +125,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   return (
     <CartContext.Provider
-      value={{ items, addItem, removeItem, updateQuantity, clearCart, itemCount, subtotal }}
+      value={{
+        items,
+        addItem,
+        removeItem,
+        updateQuantity,
+        clearCart,
+        applyPriceUpdates,
+        itemCount,
+        subtotal,
+      }}
     >
       {children}
     </CartContext.Provider>

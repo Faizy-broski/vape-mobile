@@ -45,9 +45,6 @@ export default async function ProductDetailPage({
     ? await getRelatedProducts(product.category_id, product.id)
     : [];
 
-  const price = `£${product.price.toFixed(2)}`;
-  const oldPrice = product.old_price ? `£${product.old_price.toFixed(2)}` : null;
-
   return (
     <div className="flex flex-1 flex-col">
       <SiteHeader />
@@ -103,34 +100,26 @@ export default async function ProductDetailPage({
                 {product.name}
               </h1>
 
-              <div className="mt-4 flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">{price}</span>
-                {oldPrice && (
-                  <span className="text-base text-muted-foreground line-through">{oldPrice}</span>
-                )}
-              </div>
-
-              <p className="mt-2 text-sm text-muted-foreground">
-                {product.stock > 0 ? `${product.stock} in stock` : "Currently out of stock"}
-              </p>
-
-              <Separator className="my-6" />
-
-              {product.description && (
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  {product.description}
-                </p>
-              )}
-
-              <div className="mt-6">
+              <div className="mt-4">
                 <ProductDetailActions
                   id={product.id}
                   name={product.name}
-                  price={price}
+                  price={product.price}
+                  oldPrice={product.old_price}
                   image={product.image}
                   stock={product.stock}
+                  variants={product.variants}
                 />
               </div>
+
+              {product.description && (
+                <>
+                  <Separator className="my-6" />
+                  <p className="text-sm leading-relaxed whitespace-pre-line text-muted-foreground">
+                    {product.description}
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </section>

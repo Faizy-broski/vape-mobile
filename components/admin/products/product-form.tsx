@@ -13,10 +13,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { ProductWithRelations } from "@/lib/data/products";
+import type { ProductDetail } from "@/lib/data/products";
 import type { ProductSection, ShopCategory, ShopBrand } from "@/lib/supabase/types";
 import type { ProductFormState } from "@/app/admin/(dashboard)/products/product-form-state";
 import { ImageUpload } from "@/components/admin/products/image-upload";
+import { VariantsEditor, toVariantRows } from "@/components/admin/products/variants-editor";
 
 const NONE = "none";
 
@@ -36,7 +37,7 @@ export function ProductForm({
   brands,
 }: {
   action: (state: ProductFormState, formData: FormData) => Promise<ProductFormState>;
-  product?: ProductWithRelations;
+  product?: ProductDetail;
   sections: ProductSection[];
   categories: ShopCategory[];
   brands: ShopBrand[];
@@ -49,6 +50,8 @@ export function ProductForm({
   const [brandId, setBrandId] = useState(product?.brand_id ?? NONE);
   const [slug, setSlug] = useState(product?.slug ?? "");
   const [slugTouched, setSlugTouched] = useState(Boolean(product));
+  const [variants, setVariants] = useState(() => toVariantRows(product?.variants));
+  const hasVariants = variants.length > 0;
 
   return (
     <form action={formAction} className="flex flex-col gap-6 lg:flex-row">
@@ -94,44 +97,50 @@ export function ProductForm({
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="price">Price (£)</Label>
-            <Input
-              id="price"
-              name="price"
-              type="number"
-              step="0.01"
-              min="0"
-              defaultValue={product?.price}
-              required
-            />
+        {!hasVariants && (
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="price">Price (£)</Label>
+              <Input
+                id="price"
+                name="price"
+                type="number"
+                step="0.01"
+                min="0"
+                defaultValue={product?.price}
+                required
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="oldPrice">Old price (optional)</Label>
+              <Input
+                id="oldPrice"
+                name="oldPrice"
+                type="number"
+                step="0.01"
+                min="0"
+                defaultValue={product?.old_price ?? undefined}
+              />
+            </div>
           </div>
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="oldPrice">Old price (optional)</Label>
-            <Input
-              id="oldPrice"
-              name="oldPrice"
-              type="number"
-              step="0.01"
-              min="0"
-              defaultValue={product?.old_price ?? undefined}
-            />
-          </div>
-        </div>
+        )}
+
+        <VariantsEditor rows={variants} onChange={setVariants} />
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="stock">Stock</Label>
-            <Input
-              id="stock"
-              name="stock"
-              type="number"
-              min="0"
-              defaultValue={product?.stock ?? 0}
-              required
-            />
-          </div>
+          {!hasVariants && (
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="stock">Stock</Label>
+              <Input
+                id="stock"
+                name="stock"
+                type="number"
+                min="0"
+                defaultValue={product?.stock ?? 0}
+                required
+              />
+            </div>
+          )}
           <div className="flex flex-col gap-1.5">
             <Label>Badge</Label>
             <Select value={badge ?? NONE} onValueChange={(v) => setBadge((v as typeof badge) ?? NONE)}>

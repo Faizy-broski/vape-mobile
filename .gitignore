@@ -21,6 +21,7 @@
 /build
 
 # misc
+/.import-cache/
 .DS_Store
 *.pem
 

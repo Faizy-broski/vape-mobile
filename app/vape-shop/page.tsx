@@ -12,12 +12,16 @@ import { Testimonials } from "@/components/marketing/testimonials";
 import { FlavorFinderCta } from "@/components/vape-shop/flavor-finder-cta";
 import { SupabaseSetupNotice } from "@/components/admin/supabase-setup-notice";
 import { getShopCategories, getShopBrands } from "@/lib/data/shop-catalog";
-import { listActiveProductsBySection } from "@/lib/data/products";
+import { getProductBySlug, listActiveProductsBySection } from "@/lib/data/products";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 
 // Always fetch fresh from Supabase — otherwise product/category edits made
 // in /admin wouldn't show up until the next production build.
 export const dynamic = "force-dynamic";
+
+// The "Best Value Big Puff Vape" spotlight. Hidden if this product is
+// missing or deactivated in /admin.
+const FEATURED_PRODUCT_SLUG = "ske-cl2000-pre-filled-vape-kit";
 
 export const metadata: Metadata = {
   title: "Vape Shop — V&M Vape | Mobile",
@@ -27,9 +31,14 @@ export const metadata: Metadata = {
 
 export default async function VapeShopPage() {
   const configured = isSupabaseConfigured();
-  const [categories, brands, sections] = configured
-    ? await Promise.all([getShopCategories(), getShopBrands(), listActiveProductsBySection()])
-    : [[], [], []];
+  const [categories, brands, sections, featured] = configured
+    ? await Promise.all([
+        getShopCategories(),
+        getShopBrands(),
+        listActiveProductsBySection(),
+        getProductBySlug(FEATURED_PRODUCT_SLUG),
+      ])
+    : [[], [], [], null];
 
   return (
     <div className="flex flex-1 flex-col">
@@ -43,7 +52,7 @@ export default async function VapeShopPage() {
             <MultiBuyDeals />
             <HomeProductSections sections={sections} />
             <BrandStrip brands={brands} />
-            <FeaturedProduct />
+            {featured && <FeaturedProduct product={featured} />}
             <Testimonials />
             <FlavorFinderCta />
           </>

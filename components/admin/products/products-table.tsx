@@ -62,10 +62,15 @@ export function ProductsTable({ products }: { products: ProductWithRelations[] }
                 </div>
               </td>
               <td className="px-4 py-3 whitespace-nowrap">
-                £{product.price.toFixed(2)}
+                {product.variants.length > 1 && "From "}£{product.price.toFixed(2)}
                 {product.old_price && (
                   <span className="ml-1.5 text-xs text-muted-foreground line-through">
                     £{product.old_price.toFixed(2)}
+                  </span>
+                )}
+                {product.variants.length > 0 && (
+                  <span className="block text-xs text-muted-foreground">
+                    {product.variants.length} option{product.variants.length === 1 ? "" : "s"}
                   </span>
                 )}
               </td>

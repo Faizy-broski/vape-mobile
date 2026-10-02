@@ -52,6 +52,9 @@ export function OrdersTable({ orders }: { orders: Order[] }) {
                   {order.items.map((item) => (
                     <li key={item.id} className="text-xs whitespace-nowrap">
                       {item.quantity}× {item.name}
+                      {item.variantName && (
+                        <span className="text-muted-foreground"> — {item.variantName}</span>
+                      )}
                     </li>
                   ))}
                 </ul>

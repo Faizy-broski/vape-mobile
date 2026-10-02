@@ -8,6 +8,10 @@ export type OrderItem = {
   name: string;
   price: string;
   quantity: number;
+  // Added with product variants; orders placed before then don't have them.
+  productId?: string;
+  variantId?: string | null;
+  variantName?: string | null;
 };
 
 export type Order = {

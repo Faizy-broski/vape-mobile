@@ -4,9 +4,10 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { ChevronRight } from "lucide-react";
 import { ProductCard } from "@/components/vape-shop/product-card";
-import type { Product, ProductSection as ProductSectionRow } from "@/lib/supabase/types";
+import type { ProductSection as ProductSectionRow } from "@/lib/supabase/types";
+import type { ProductWithVariantSummary } from "@/lib/data/products";
 
-export type SectionWithProducts = ProductSectionRow & { products: Product[] };
+export type SectionWithProducts = ProductSectionRow & { products: ProductWithVariantSummary[] };
 
 export function HomeProductSections({ sections }: { sections: SectionWithProducts[] }) {
   return (
