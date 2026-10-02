@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
+import { CONTACT_EMAIL, CONTACT_EMAIL_HREF, CONTACT_PHONE, CONTACT_PHONE_HREF } from "@/lib/contact";
 
 const FOOTER_COLUMNS: {
   title: string;
@@ -26,8 +27,8 @@ const FOOTER_COLUMNS: {
   {
     title: "Contact",
     items: [
-      { label: "01234 567 890", href: "tel:01234567890" },
-      { label: "hello@V&M.co.uk", href: "mailto:hello@vandm.co.uk" },
+      { label: CONTACT_PHONE, href: CONTACT_PHONE_HREF },
+      { label: CONTACT_EMAIL, href: CONTACT_EMAIL_HREF },
     ],
   },
   {
