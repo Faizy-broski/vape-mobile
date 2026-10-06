@@ -19,6 +19,7 @@ import { SearchDialog } from "@/components/search/search-dialog";
 import { AccountMenu } from "@/components/account/account-menu";
 
 const NAV_LINKS = [
+  { label: "New Stock", href: "/new-stock" },
   { label: "Repairs", href: "/repairs" },
   { label: "Vape Shop", href: "/vape-shop" },
   { label: "Accessories", href: "/accessories" },
@@ -51,7 +52,7 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-8 lg:flex">
+        <nav className="hidden items-center gap-6 lg:flex xl:gap-8">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}

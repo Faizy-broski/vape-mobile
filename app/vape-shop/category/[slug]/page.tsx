@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { ProductCard } from "@/components/vape-shop/product-card";
 import { CategoryFilters } from "@/components/vape-shop/category/category-filters";
-import { getShopCategoryBySlug, getShopBrands } from "@/lib/data/shop-catalog";
+import { getShopCategoryBySlug, getVapeShopBrands } from "@/lib/data/shop-catalog";
 import { listActiveProductsByCategory, type CategoryProductFilters } from "@/lib/data/products";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { PHONE_CATEGORY_SLUG } from "@/lib/phones/catalog";
 
 export const dynamic = "force-dynamic";
 
@@ -40,6 +41,7 @@ export default async function CategoryPage({
   if (!isSupabaseConfigured()) notFound();
 
   const { slug } = await params;
+  if (slug === PHONE_CATEGORY_SLUG) redirect("/new-stock");
   const query = await searchParams;
 
   const category = await getShopCategoryBySlug(slug);
@@ -55,7 +57,7 @@ export default async function CategoryPage({
 
   const [products, brands] = await Promise.all([
     listActiveProductsByCategory(category.id, filters),
-    getShopBrands(),
+    getVapeShopBrands(),
   ]);
 
   return (

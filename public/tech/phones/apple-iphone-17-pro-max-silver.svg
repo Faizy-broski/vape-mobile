@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="640" height="640">
+  <defs>
+    <linearGradient id="body-silver" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ecedef" />
+      <stop offset="0.55" stop-color="#E2E3E6" />
+      <stop offset="1" stop-color="#c7c8ca" />
+    </linearGradient>
+    <linearGradient id="plateau-silver" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eff0f1" />
+      <stop offset="1" stop-color="#E2E3E6" />
+    </linearGradient>
+    <linearGradient id="sheen-silver" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0" />
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.35" />
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="lensRing-silver" cx="0.35" cy="0.3" r="0.8">
+      <stop offset="0" stop-color="#5b5e66" />
+      <stop offset="1" stop-color="#16171b" />
+    </radialGradient>
+    <radialGradient id="lensGlass-silver" cx="0.35" cy="0.35" r="0.75">
+      <stop offset="0" stop-color="#3d4f7a" />
+      <stop offset="0.6" stop-color="#151a2b" />
+      <stop offset="1" stop-color="#05060a" />
+    </radialGradient>
+    <linearGradient id="wall-silver" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#e6e7ea" />
+      <stop offset="1" stop-color="#9799a1" />
+    </linearGradient>
+    <radialGradient id="blob-silver" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.55" />
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14" />
+    </filter>
+    <clipPath id="screen-silver"><rect x="9" y="9" width="214" height="466" rx="28" /></clipPath>
+  </defs>
+
+  <ellipse cx="330" cy="590" rx="210" ry="18" fill="#000" opacity="0.22" filter="url(#shadow)" />
+
+  <!-- front -->
+  <g transform="translate(318 46) rotate(7 116 242)">
+    <rect width="232" height="484" rx="36" fill="#b5b6b8" />
+    <rect x="2.5" y="2.5" width="227" height="479" rx="34" fill="#0a0a0c" />
+    <g clip-path="url(#screen-silver)">
+      <rect x="9" y="9" width="214" height="466" fill="url(#wall-silver)" />
+      <circle cx="60" cy="150" r="130" fill="url(#blob-silver)" />
+      <circle cx="200" cy="380" r="110" fill="#f1f1f3" opacity="0.35" />
+      <rect x="40" y="90" width="80" height="10" rx="5" fill="#fff" opacity="0.85" />
+      <rect x="40" y="108" width="52" height="6" rx="3" fill="#fff" opacity="0.55" />
+    </g>
+    <rect x="82" y="22" width="68" height="20" rx="10" fill="#050505" />
+  </g>
+
+  <!-- back -->
+  <g transform="translate(90 96) rotate(-4 116 242)">
+    <rect width="232" height="484" rx="36" fill="#b5b6b8" />
+    <rect x="2.5" y="2.5" width="227" height="479" rx="34" fill="url(#body-silver)" />
+    <rect x="2.5" y="2.5" width="227" height="479" rx="34" fill="url(#sheen-silver)" opacity="0.8" />
+    
+      <rect x="4" y="4" width="224" height="180" rx="32" fill="url(#plateau-silver)" stroke="#b5b6b8" stroke-opacity="0.35" />
+      
+    <circle cx="66" cy="60" r="33" fill="#d0d1d4" />
+    <circle cx="66" cy="60" r="30" fill="url(#lensRing-silver)" />
+    <circle cx="66" cy="60" r="20.400000000000002" fill="#0b0c10" />
+    <circle cx="66" cy="60" r="12.6" fill="url(#lensGlass-silver)" />
+    <circle cx="59.4" cy="52.8" r="3.9000000000000004" fill="#ffffff" opacity="0.55" />
+      
+    <circle cx="66" cy="136" r="33" fill="#d0d1d4" />
+    <circle cx="66" cy="136" r="30" fill="url(#lensRing-silver)" />
+    <circle cx="66" cy="136" r="20.400000000000002" fill="#0b0c10" />
+    <circle cx="66" cy="136" r="12.6" fill="url(#lensGlass-silver)" />
+    <circle cx="59.4" cy="128.8" r="3.9000000000000004" fill="#ffffff" opacity="0.55" />
+      
+    <circle cx="132" cy="98" r="33" fill="#d0d1d4" />
+    <circle cx="132" cy="98" r="30" fill="url(#lensRing-silver)" />
+    <circle cx="132" cy="98" r="20.400000000000002" fill="#0b0c10" />
+    <circle cx="132" cy="98" r="12.6" fill="url(#lensGlass-silver)" />
+    <circle cx="125.4" cy="90.8" r="3.9000000000000004" fill="#ffffff" opacity="0.55" />
+      <circle cx="190" cy="60" r="10" fill="#fdf6e3" stroke="#b5b6b8" stroke-width="1.5" />
+      <circle cx="190" cy="136" r="9" fill="#14151a" />
+  </g>
+</svg>

@@ -8,6 +8,7 @@ export type SearchResult = {
 const PAGES: SearchResult[] = [
   { title: "Home", href: "/", group: "Pages" },
   { title: "Tech Repair", href: "/repairs", group: "Pages" },
+  { title: "New Stock — Brand New Phones", href: "/new-stock", group: "Pages" },
   { title: "Vape Shop", href: "/vape-shop", group: "Pages" },
   { title: "Book a Repair", href: "/repairs/book", group: "Pages" },
 ];

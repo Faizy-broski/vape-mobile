@@ -1,5 +1,6 @@
 import "server-only";
 import { createServerReadClient } from "@/lib/supabase/server";
+import { PHONE_BRAND_NAMES, PHONE_CATEGORY_SLUG } from "@/lib/phones/catalog";
 import type { ShopBrand, ShopCategory, ProductSection } from "@/lib/supabase/types";
 
 export async function getShopCategories(): Promise<ShopCategory[]> {
@@ -38,4 +39,14 @@ export async function getProductSections(): Promise<ProductSection[]> {
     .order("sort_order");
   if (error) throw error;
   return data ?? [];
+}
+
+// Phones share the catalogue tables but are sold from /new-stock, so the
+// vape shop's category tiles, brand strip and brand filters leave them out.
+export async function getVapeShopCategories(): Promise<ShopCategory[]> {
+  return (await getShopCategories()).filter((c) => c.slug !== PHONE_CATEGORY_SLUG);
+}
+
+export async function getVapeShopBrands(): Promise<ShopBrand[]> {
+  return (await getShopBrands()).filter((b) => !PHONE_BRAND_NAMES.includes(b.name));
 }

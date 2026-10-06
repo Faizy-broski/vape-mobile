@@ -11,7 +11,7 @@ import { FeaturedProduct } from "@/components/vape-shop/featured-product";
 import { Testimonials } from "@/components/marketing/testimonials";
 import { FlavorFinderCta } from "@/components/vape-shop/flavor-finder-cta";
 import { SupabaseSetupNotice } from "@/components/admin/supabase-setup-notice";
-import { getShopCategories, getShopBrands } from "@/lib/data/shop-catalog";
+import { getVapeShopCategories, getVapeShopBrands } from "@/lib/data/shop-catalog";
 import { getProductBySlug, listActiveProductsBySection } from "@/lib/data/products";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 
@@ -33,8 +33,8 @@ export default async function VapeShopPage() {
   const configured = isSupabaseConfigured();
   const [categories, brands, sections, featured] = configured
     ? await Promise.all([
-        getShopCategories(),
-        getShopBrands(),
+        getVapeShopCategories(),
+        getVapeShopBrands(),
         listActiveProductsBySection(),
         getProductBySlug(FEATURED_PRODUCT_SLUG),
       ])

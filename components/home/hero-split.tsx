@@ -83,6 +83,26 @@ export function HeroSplit() {
       ))}
 
       <div className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 bg-white/10 lg:block" />
+
+      <motion.div
+        initial={{ opacity: 0, y: -12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.5 }}
+        className="absolute top-5 left-1/2 z-20 w-max max-w-[calc(100%-2rem)] -translate-x-1/2 sm:top-8"
+      >
+        <Link
+          href="/new-stock"
+          className="group/pill inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-black/45 py-1.5 pr-4 pl-1.5 text-xs text-white shadow-lg backdrop-blur-md transition-colors hover:bg-black/60 sm:text-sm"
+        >
+          <span className="rounded-full bg-primary px-2.5 py-1 text-[10px] font-bold tracking-wider text-primary-foreground uppercase sm:text-[11px]">
+            New Stock
+          </span>
+          <span className="truncate">
+            iPhone 17 Pro Max &amp; Galaxy phones<span className="hidden xs:inline"> — just landed</span>
+          </span>
+          <ArrowRight className="size-3.5 shrink-0 transition-transform group-hover/pill:translate-x-0.5" />
+        </Link>
+      </motion.div>
     </section>
   );
 }

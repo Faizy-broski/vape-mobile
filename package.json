@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "import:vandm": "node --env-file=.env.local scripts/import-vandm.mjs"
+    "import:vandm": "node --env-file=.env.local scripts/import-vandm.mjs",
+    "seed:phones": "node --env-file=.env.local scripts/seed-phones.mjs",
+    "sync:phone-images": "node --env-file=.env.local scripts/sync-phone-images.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
@@ -36,6 +38,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
+    "sharp": "^0.35.4",
     "tailwindcss": "^4",
     "typescript": "^5"
   },

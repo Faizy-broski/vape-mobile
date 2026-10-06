@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
@@ -12,6 +12,7 @@ import { ProductDetailActions } from "@/components/vape-shop/product-detail/prod
 import { ProductCard } from "@/components/vape-shop/product-card";
 import { getProductBySlug, getRelatedProducts } from "@/lib/data/products";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { PHONE_CATEGORY_SLUG } from "@/lib/phones/catalog";
 
 export const dynamic = "force-dynamic";
 
@@ -40,6 +41,7 @@ export default async function ProductDetailPage({
   const { slug } = await params;
   const product = await getProductBySlug(slug);
   if (!product) notFound();
+  if (product.category?.slug === PHONE_CATEGORY_SLUG) redirect(`/new-stock/${product.slug}`);
 
   const related = product.category_id
     ? await getRelatedProducts(product.category_id, product.id)
